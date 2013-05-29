@@ -539,7 +539,7 @@ service mdnsd /system/bin/mdnsd
 service sensorservice /system/bin/sensorservice
     class main
     user system
-    group graphics audio camera inet net_bt net_bt_admin net_bw_acct drmrpc
+    group graphics audio camera inet net_bt net_bt_admin net_bw_acct drmrpc input
 
 service ubuntuappmanager /system/bin/ubuntuappmanager
     class main
