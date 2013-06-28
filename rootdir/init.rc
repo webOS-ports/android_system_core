@@ -541,7 +541,7 @@ service mdnsd /system/bin/mdnsd
     oneshot
 
 service sensorservice /system/bin/sensorservice
-    class main
+    class late_start
     user system
     group graphics audio camera inet net_bt net_bt_admin net_bw_acct drmrpc input
 
