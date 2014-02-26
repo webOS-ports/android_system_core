@@ -411,6 +411,12 @@ on boot
 # Define default initial receive window size in segments.
     setprop net.tcp.default_init_rwnd 60
 
+# adb/mtp force hack
+    setprop persist.sys.usb.config adb,mtp
+
+# Set this property so surfaceflinger is not started by system_init
+    setprop system_init.startsurfaceflinger 0
+
     class_start core
     class_start main
 
