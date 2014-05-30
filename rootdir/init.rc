@@ -412,7 +412,7 @@ on boot
     setprop net.tcp.default_init_rwnd 60
 
 # adb/mtp force hack
-    setprop persist.sys.usb.config adb,mtp
+    setprop persist.sys.usb.config mtp,adb
 
 # Set this property so surfaceflinger is not started by system_init
     setprop system_init.startsurfaceflinger 0
