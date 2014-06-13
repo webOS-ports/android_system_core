@@ -150,8 +150,6 @@ loglevel 3
     chmod 0440 /sys/fs/pstore/console-ramoops
 
 on post-fs
-    # once everything is setup, no need to modify /
-    mount rootfs rootfs / ro remount
     # mount shared so changes propagate into child namespaces
     mount rootfs rootfs / shared rec
 
