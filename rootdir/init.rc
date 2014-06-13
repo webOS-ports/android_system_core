@@ -26,14 +26,6 @@ on early-init
 # create mountpoints
     mkdir /mnt 0775 root system
 
-    # Allow system UID to setenforce and set booleans.
-    chown system system /selinux/enforce
-    chown system system /sys/fs/selinux/enforce
-    chown -R system system /selinux/booleans
-    chown -R system system /sys/fs/selinux/booleans
-    chown system system /selinux/commit_pending_bools
-    chown system system /sys/fs/selinux/commit_pending_bools
-
 on init
 
 sysclktz 0
@@ -480,12 +472,9 @@ service console /system/bin/sh
     class core
     console
     disabled
-    user shell
+    user root
     group log
     seclabel u:r:shell:s0
-
-service auditd /system/bin/auditd -k
-    class main
 
 on property:ro.debuggable=1
     start console
@@ -511,17 +500,6 @@ service servicemanager /system/bin/servicemanager
     onrestart restart media
     onrestart restart surfaceflinger
     onrestart restart drm
-
-service vold /system/bin/vold
-    class core
-    socket vold stream 0660 root mount
-    ioprio be 2
-
-service netd /system/bin/netd
-    class main
-    socket netd stream 0660 root system
-    socket dnsproxyd stream 0660 root inet
-    socket mdns stream 0660 root system
 
 service debuggerd /system/bin/debuggerd
     class main
