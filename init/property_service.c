@@ -381,12 +381,13 @@ void handle_property_set_fd()
     int s;
     int r;
     int res;
+    int ret;
     struct ucred cr;
     struct sockaddr_un addr;
     socklen_t addr_size = sizeof(addr);
     socklen_t cr_size = sizeof(cr);
     char * source_ctx = NULL;
-    char * rproperty = NULL;
+    char rproperty[PROP_VALUE_MAX];
     const prop_info *pi;
 
     if ((s = accept(property_set_fd, (struct sockaddr *) &addr, &addr_size)) < 0) {
@@ -452,8 +453,8 @@ void handle_property_set_fd()
 
         if (msg.name) {
             /* If we have a value, copy it over, otherwise returns the default */
-            rproperty = property_get(msg.name);
-            if (rproperty) {
+            ret = property_get(msg.name, rproperty);
+            if (ret) {
                 strlcpy(msg.value, rproperty, sizeof(msg.value));
             }
         }
