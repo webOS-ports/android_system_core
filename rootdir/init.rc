@@ -459,8 +459,8 @@ service servicemanager /system/bin/servicemanager
     group system
     critical
     onrestart restart zygote
-    onrestart restart media
-    onrestart restart surfaceflinger
+    onrestart restart minimedia
+    onrestart restart minisf
     onrestart restart drm
 
 service debuggerd /system/bin/debuggerd
@@ -521,3 +521,14 @@ service mdnsd /system/bin/mdnsd
     socket mdnsd stream 0660 mdnsr inet
     disabled
     oneshot
+
+service minimedia /system/bin/minimediaservice
+    class main
+    user media
+    group audio camera inet net_bt net_bt_admin net_bw_acct drmrpc qcom_diag
+    ioprio rt 4
+
+service minisf /system/bin/minisfservice
+    class main
+    user system
+    group graphics drmrpc
