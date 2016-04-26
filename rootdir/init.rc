@@ -243,6 +243,7 @@ on post-fs-data
     mkdir /data/ssh 0750 root shell
     mkdir /data/ssh/empty 0700 root root
     mkdir /data/radio 0770 radio radio
+    mkdir /data/tombstones 0771 system system
 
     # create dalvik-cache and double-check the perms, so as to enforce our permissions
     mkdir /data/dalvik-cache 0771 system system
@@ -517,7 +518,7 @@ service drm /system/bin/drmserver
 service media /system/bin/mediaserver
     class main
     user media
-    group audio camera inet net_bt net_bt_admin net_bw_acct drmrpc qcom_diag mediadrm
+    group audio camera inet net_bt net_bt_admin net_bw_acct drmrpc qcom_diag mediadrm nvram ccci radio
     ioprio rt 4
 
 service installd /system/bin/installd
@@ -569,5 +570,10 @@ service mdnsd /system/bin/mdnsd
     user mdnsr
     group inet net_raw
     socket mdnsd stream 0660 mdnsr inet
+    disabled
+    oneshot
+
+service pre-recovery /system/bin/uncrypt
+    class main
     disabled
     oneshot
