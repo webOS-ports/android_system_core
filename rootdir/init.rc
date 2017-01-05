@@ -7,7 +7,6 @@
 import /init.environ.rc
 import /init.usb.rc
 import /init.${ro.hardware}.rc
-import /init.${ro.zygote}.rc
 import /init.trace.rc
 # Include CM's extra init file
 import /init.cm.rc
@@ -190,7 +189,7 @@ on late-init
 
 on post-fs
     # once everything is setup, no need to modify /
-    mount rootfs rootfs / ro remount
+    # mount rootfs rootfs / ro remount
     # mount shared so changes propagate into child namespaces
     mount rootfs rootfs / shared rec
 
@@ -422,6 +421,9 @@ on boot
     # Define default initial receive window size in segments.
     setprop net.tcp.default_init_rwnd 60
 
+   # adb/mtp force hack
+    setprop persist.sys.usb.config mtp,adb
+
     class_start core
 
 on nonencrypted
@@ -498,13 +500,9 @@ service console /system/bin/sh
     class core
     console
     disabled
-    user shell
+    user root
     group shell log
     seclabel u:r:shell:s0
-
-service auditd /system/bin/auditd -k
-    seclabel u:r:logd:s0
-    class main
 
 on property:ro.debuggable=1
     start console
@@ -520,11 +518,6 @@ service adbd /sbin/adbd --root_seclabel=u:r:su:s0
 on property:ro.kernel.qemu=1
     start adbd
 
-service lmkd /system/bin/lmkd
-    class core
-    critical
-    socket lmkd seqpacket 0660 system system
-
 service servicemanager /system/bin/servicemanager
     class core
     user system
@@ -535,18 +528,6 @@ service servicemanager /system/bin/servicemanager
     onrestart restart media
     onrestart restart surfaceflinger
     onrestart restart drm
-
-service vold /system/bin/vold
-    class core
-    socket vold stream 0660 root mount
-    ioprio be 2
-
-service netd /system/bin/netd
-    class main
-    socket netd stream 0660 root system
-    socket dnsproxyd stream 0660 root inet
-    socket mdns stream 0660 root system
-    socket fwmarkd stream 0660 root inet
 
 service debuggerd /system/bin/debuggerd
     class main
@@ -560,12 +541,6 @@ service ril-daemon /system/bin/rild
     socket rild-debug stream 660 radio system
     user root
     group radio cache inet misc audio sdcard_rw qcom_diag log
-
-service surfaceflinger /system/bin/surfaceflinger
-    class core
-    user system
-    group graphics drmrpc
-    onrestart restart zygote
 
 service drm /system/bin/drmserver
     class main
@@ -591,13 +566,6 @@ service encrypt /system/bin/vdc --wait cryptfs enablecrypto inplace default
     oneshot
     # vold will set vold.decrypt to trigger_restart_framework (default
     # encryption)
-
-service bootanim /system/bin/bootanimation
-    class core
-    user graphics
-    group graphics audio
-    disabled
-    oneshot
 
 service installd /system/bin/installd
     class main
@@ -628,11 +596,6 @@ service mtpd /system/bin/mtpd
     group vpn net_admin inet net_raw
     disabled
     oneshot
-
-service keystore /system/bin/keystore /data/misc/keystore
-    class main
-    user keystore
-    group keystore drmrpc
 
 service dumpstate /system/bin/dumpstate -s
     class main
